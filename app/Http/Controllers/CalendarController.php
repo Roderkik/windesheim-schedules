@@ -84,8 +84,8 @@ class CalendarController extends Controller
             $event = new Event($scheduleDatum->vaknaam);
             $event->description($scheduleDatum->commentaar);
             $event->address($scheduleDatum->lokaal);
-            $event->startsAt(Carbon::createFromTimestampMs($scheduleDatum->starttijd));
-            $event->endsAt(Carbon::createFromTimestampMs($scheduleDatum->eindtijd));
+            $event->startsAt(Carbon::createFromTimestampMs($scheduleDatum->starttijd)->subHour());
+            $event->endsAt(Carbon::createFromTimestampMs($scheduleDatum->eindtijd)->subHour());
 
             $this->calendar->event($event);
         }
