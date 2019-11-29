@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\WindesheimApi;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Spatie\IcalendarGenerator\Components\Calendar;
+use Spatie\IcalendarGenerator\Components\Event;
 
 class CalendarController extends Controller
 {
     private WindesheimApi $api;
     private Calendar $calendar;
 
+    /**
+     * Initializes controller properties.
+     */
     public function __construct()
     {
         $this->api = new WindesheimApi();
@@ -21,60 +25,81 @@ class CalendarController extends Controller
     /**
      * Generate ical file for the schedule of a class
      *
-     * @param Request $request
      * @param string $class
      * @return Response
      */
     public function class(string $class): Response
     {
         $this->api->setClass($class);
+        $this->buildCalendar($class);
 
-        dd($this->api->schedule());
-
-        //TODO: Build schedule array to ical logic.
-
-        return response("")
-            ->header('Content-Type', 'text/calendar')
-            ->header('charset', 'utf-8');
+        return $this->calendarResponse();
     }
 
     /**
      * Generate ical file for the schedule of a teacher
      *
-     * @param Request $request
      * @param string $teacher
      * @return Response
      */
     public function teacher(string $teacher): Response
     {
         $this->api->setTeacher($teacher);
+        $this->buildCalendar($teacher);
 
-        dd($this->api->schedule());
-
-        //TODO: Build schedule array to ical logic.
-
-        return response("")
-            ->header('Content-Type', 'text/calendar')
-            ->header('charset', 'utf-8');
+        return $this->calendarResponse();
     }
-
 
     /**
      * Generate ical file for the schedule of a subject
      *
-     * @param Request $request
      * @param string $subject
      * @return Response
      */
     public function subject(string $subject): Response
     {
-        $this->api->setTeacher($subject);
+        $this->api->setSubject($subject);
+        $this->buildCalendar($subject);
 
-        dd($this->api->schedule());
+        return $this->calendarResponse();
+    }
 
-        //TODO: Build schedule array to ical logic.
+    /**
+     * Names the calendar and adds
+     * events found in api.
+     *
+     * @param string $calendarName
+     * @return void
+     */
+    private function buildCalendar(string $calendarName): void
+    {
+        $this->calendar->name($calendarName);
 
-        return response("")
+        foreach ($this->api->schedule() as $scheduleDatum) {
+            if (empty($scheduleDatum->vaknaam) || empty($scheduleDatum->vakcode)) {
+                $scheduleDatum->vaknaam = $scheduleDatum->commentaar;
+                $scheduleDatum->vakcode = $scheduleDatum->commentaar;
+            }
+
+            $event = new Event($scheduleDatum->vaknaam);
+            $event->description($scheduleDatum->commentaar);
+            $event->address($scheduleDatum->lokaal);
+            $event->startsAt(Carbon::createFromTimestampMs($scheduleDatum->starttijd));
+            $event->endsAt(Carbon::createFromTimestampMs($scheduleDatum->eindtijd));
+
+            $this->calendar->event($event);
+        }
+    }
+
+    /**
+     * Creates the standard response
+     * used by this controller.
+     *
+     * @return Response
+     */
+    private function calendarResponse(): Response
+    {
+        return response($this->calendar->get())
             ->header('Content-Type', 'text/calendar')
             ->header('charset', 'utf-8');
     }
