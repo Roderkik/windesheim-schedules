@@ -32,6 +32,9 @@
                         <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <span class="text-muted font-small">For spicy memes check out: <a target="_blank" href="https://windesmemes.nl">Windesmemes</a></span>
+                </div>
             </div>
         </div>
     </div>
