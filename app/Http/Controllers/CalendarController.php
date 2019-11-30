@@ -110,7 +110,13 @@ class CalendarController extends Controller
      */
     private function calendarResponse(): Response
     {
-        return response($this->calendar->export())
+        //Add X-WR-TIMEZONE:Europe/Amsterdam post export because liliumdev/icalendar doesn't support it
+        $stream = $this->calendar->export();
+        $needle = "METHOD:PUBLISH";
+
+        $stream = substr_replace($stream, "X-WR-TIMEZONE:Europe/Amsterdam\r\n", strpos($stream, $needle), 0);
+
+        return response($stream)
             ->header('Content-Type', 'text/calendar')
             ->header('charset', 'utf-8');
     }
