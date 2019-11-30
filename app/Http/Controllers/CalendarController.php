@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CalendarEvent;
 use App\Helpers\WindesheimApi;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
-use Spatie\IcalendarGenerator\Components\Calendar;
-use Spatie\IcalendarGenerator\Components\Event;
+use Liliumdev\ICalendar\ZCiCal;
+use Liliumdev\ICalendar\ZCTimeZoneHelper;
 
 class CalendarController extends Controller
 {
     private WindesheimApi $api;
-    private Calendar $calendar;
+    private ZCiCal $calendar;
 
     /**
      * Initializes controller properties.
@@ -19,7 +20,7 @@ class CalendarController extends Controller
     public function __construct()
     {
         $this->api = new WindesheimApi();
-        $this->calendar = new Calendar();
+        $this->calendar = new ZCiCal();
     }
 
     /**
@@ -73,7 +74,14 @@ class CalendarController extends Controller
      */
     private function buildCalendar(string $calendarName): void
     {
-        $this->calendar->name($calendarName);
+        //TODO: give the calendar file a name node somehow...
+
+        ZCTimeZoneHelper::getTZNode(
+            Carbon::now()->year,
+            Carbon::now()->year,
+            "Europe/Amsterdam",
+            $this->calendar->curnode
+        );
 
         foreach ($this->api->schedule() as $scheduleDatum) {
             if (empty($scheduleDatum->vaknaam) || empty($scheduleDatum->vakcode)) {
@@ -81,13 +89,16 @@ class CalendarController extends Controller
                 $scheduleDatum->vakcode = $scheduleDatum->commentaar;
             }
 
-            $event = new Event($scheduleDatum->vaknaam);
-            $event->description($scheduleDatum->commentaar);
-            $event->address($scheduleDatum->lokaal);
-            $event->startsAt(Carbon::createFromTimestampMs($scheduleDatum->starttijd)->subHour());
-            $event->endsAt(Carbon::createFromTimestampMs($scheduleDatum->eindtijd)->subHour());
+            // Transform time to UTC
+            $scheduleDatum->starttijd = Carbon::createFromTimestampMs($scheduleDatum->starttijd);
+            $scheduleDatum->eindtijd = Carbon::createFromTimestampMs($scheduleDatum->eindtijd);
 
-            $this->calendar->event($event);
+            $event = new CalendarEvent($this->calendar);
+            $event->title($scheduleDatum->commentaar);
+            $event->location($scheduleDatum->lokaal);
+            $event->start(CalendarEvent::icalFormat($scheduleDatum->starttijd), "Europe/Amsterdam");
+            $event->end(CalendarEvent::icalFormat($scheduleDatum->eindtijd), "Europe/Amsterdam");
+            $event->stamp("Europe/Amsterdam");
         }
     }
 
@@ -99,7 +110,7 @@ class CalendarController extends Controller
      */
     private function calendarResponse(): Response
     {
-        return response($this->calendar->get())
+        return response($this->calendar->export())
             ->header('Content-Type', 'text/calendar')
             ->header('charset', 'utf-8');
     }
