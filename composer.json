@@ -8,8 +8,8 @@
         "php": "^7.4",
         "ext-json": "*",
         "laravel/lumen-framework": "^6.0",
-        "spatie/icalendar-generator": "^0.0.2",
-        "ext-http": "*"
+        "liliumdev/icalendar": "^0.1.0",
+        "spatie/icalendar-generator": "^0.0.2"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
