@@ -13,6 +13,13 @@
 |
 */
 
+$router->get(
+    "/",
+    function () {
+        return view("landing");
+    }
+);
+
 // ical schedule generation routes:
 $router->group(
     ["prefix" => "schedule", "as" => "schedule."],
