@@ -1,9 +1,14 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
+    "name": "roderik3000/windesheim-schedules",
+    "description": "An icalendar generator using scheduling API from Windesheim.",
+    "keywords": ["schedule", "icalendar", "ical", "google calendar", "outlook", "calendar"],
     "license": "MIT",
+    "homepage": "http://windeschedule.nl",
     "type": "project",
+    "support": {
+        "issues": "https://github.com/roderik3000/windesheim-schedules/issues",
+        "source": "https://github.com/roderik3000/windesheim-schedules"
+    },
     "require": {
         "php": "^7.4",
         "ext-json": "*",
