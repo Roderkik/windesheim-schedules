@@ -32,9 +32,9 @@ class CalendarController extends Controller
     public function class(string $class): Response
     {
         $this->api->setClass($class);
-        $this->buildCalendar($class);
+        $this->buildCalendar();
 
-        return $this->calendarResponse();
+        return $this->calendarResponse($class);
     }
 
     /**
@@ -46,9 +46,9 @@ class CalendarController extends Controller
     public function teacher(string $teacher): Response
     {
         $this->api->setTeacher($teacher);
-        $this->buildCalendar($teacher);
+        $this->buildCalendar();
 
-        return $this->calendarResponse();
+        return $this->calendarResponse($teacher);
     }
 
     /**
@@ -60,19 +60,18 @@ class CalendarController extends Controller
     public function subject(string $subject): Response
     {
         $this->api->setSubject($subject);
-        $this->buildCalendar($subject);
+        $this->buildCalendar();
 
-        return $this->calendarResponse();
+        return $this->calendarResponse($subject);
     }
 
     /**
      * Names the calendar and adds
      * events found in api.
      *
-     * @param string $calendarName
      * @return void
      */
-    private function buildCalendar(string $calendarName): void
+    private function buildCalendar(): void
     {
         //TODO: give the calendar file a name node somehow...
 
@@ -106,15 +105,20 @@ class CalendarController extends Controller
      * Creates the standard response
      * used by this controller.
      *
+     * @param string $name
      * @return Response
      */
-    private function calendarResponse(): Response
+    private function calendarResponse(string $name): Response
     {
-        //Add X-WR-TIMEZONE:Europe/Amsterdam post export because liliumdev/icalendar doesn't support it
+        //Add X-WR-TIMEZONE, X-WR-CALNAME & NAME post export because liliumdev/icalendar doesn't support it
         $stream = $this->calendar->export();
         $needle = "METHOD:PUBLISH";
 
-        $stream = substr_replace($stream, "X-WR-TIMEZONE:Europe/Amsterdam\r\n", strpos($stream, $needle), 0);
+        $stream = substr_replace(
+            $stream,
+            "X-WR-TIMEZONE:Europe/Amsterdam\r\nX-WR-CALNAME:$name\r\nNAME:$name\r\n",
+            strpos($stream, $needle)
+        );
 
         return response($stream)
             ->header('Content-Type', 'text/calendar')
