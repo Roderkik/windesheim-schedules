@@ -1,6 +1,6 @@
 # Windesheim Schedule Generator
 
-A web application providing iCalendar links for calendar applications. useful for students who dislike using the WIP Windesheim Information Panel...
+A [web application](http://windeschedule.nl) providing iCalendar links for calendar applications. useful for students who dislike using the WIP Windesheim Information Panel...
 
 ### Contributing
 
