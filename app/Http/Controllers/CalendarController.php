@@ -73,8 +73,6 @@ class CalendarController extends Controller
      */
     private function buildCalendar(): void
     {
-        //TODO: give the calendar file a name node somehow...
-
         ZCTimeZoneHelper::getTZNode(
             Carbon::now()->year,
             Carbon::now()->year,
