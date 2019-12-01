@@ -115,7 +115,8 @@ class CalendarController extends Controller
         $stream = substr_replace(
             $stream,
             "X-WR-TIMEZONE:Europe/Amsterdam\r\nX-WR-CALNAME:$name\r\nNAME:$name\r\n",
-            strpos($stream, $needle)
+            strpos($stream, $needle),
+            0
         );
 
         return response($stream)
