@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Calendar;
-use App\Helpers\CalendarEvent;
+use App\Helpers\Event;
 use App\Helpers\WindesheimApi;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -91,7 +91,7 @@ class CalendarController extends Controller
             $scheduleDatum->starttijd = Carbon::createFromTimestampMs($scheduleDatum->starttijd);
             $scheduleDatum->eindtijd = Carbon::createFromTimestampMs($scheduleDatum->eindtijd);
 
-            $event = new CalendarEvent();
+            $event = new Event();
             $event->title($scheduleDatum->commentaar)
                 ->location($scheduleDatum->lokaal)
                 ->start($scheduleDatum->starttijd, $timezone)

@@ -9,7 +9,7 @@ use Liliumdev\ICalendar\ZCiCal;
 use Liliumdev\ICalendar\ZCiCalDataNode;
 use Liliumdev\ICalendar\ZCiCalNode;
 
-class CalendarEvent
+class Event
 {
     private ZCiCalNode $event;
     private array $nodes;
@@ -99,43 +99,43 @@ class CalendarEvent
         return (string)$dateComponent;
     }
 
-    public function start(Carbon $start, string $timezone = null): CalendarEvent
+    public function start(Carbon $start, string $timezone = null): Event
     {
         $this->nodes[] = [
             "type" => "date",
             "name" => "DTSTART",
-            "value" => CalendarEvent::icalFormat($start),
+            "value" => Event::icalFormat($start),
             "timezone" => $timezone
         ];
 
         return $this;
     }
 
-    public function end(Carbon $end, string $timezone = null): CalendarEvent
+    public function end(Carbon $end, string $timezone = null): Event
     {
         $this->nodes[] = [
             "type" => "date",
             "name" => "DTEND",
-            "value" => CalendarEvent::icalFormat($end),
+            "value" => Event::icalFormat($end),
             "timezone" => $timezone
         ];
 
         return $this;
     }
 
-    public function stamp(string $timezone = null): CalendarEvent
+    public function stamp(string $timezone = null): Event
     {
         $this->nodes[] = [
             "type" => "date",
             "name" => "DTSTAMP",
-            "value" => CalendarEvent::icalFormat(Carbon::now()),
+            "value" => Event::icalFormat(Carbon::now()),
             "timezone" => $timezone
         ];
 
         return $this;
     }
 
-    public function title(string $title): CalendarEvent
+    public function title(string $title): Event
     {
         $this->addNode("SUMMARY:", $title);
 
@@ -147,21 +147,21 @@ class CalendarEvent
         $this->nodes[] = ["type" => "standard", "name" => $name, "value" => $value];
     }
 
-    public function description(string $description): CalendarEvent
+    public function description(string $description): Event
     {
         $this->addNode("DESCRIPTION:", $description);
 
         return $this;
     }
 
-    public function location(string $location): CalendarEvent
+    public function location(string $location): Event
     {
         $this->addNode("LOCATION:", $location);
 
         return $this;
     }
 
-    public function customNode(string $name, string $value): CalendarEvent
+    public function customNode(string $name, string $value): Event
     {
         $this->addNode($name, $value);
 

@@ -24,10 +24,10 @@ class Calendar
     /**
      * Adds an event to the calendar.
      *
-     * @param CalendarEvent $event
+     * @param Event $event
      * @return Calendar
      */
-    public function event(CalendarEvent $event): Calendar
+    public function event(Event $event): Calendar
     {
         $this->events[] = $event;
 
@@ -70,7 +70,7 @@ class Calendar
     /**
      * Wrapper around ZCiCal::export
      *
-     * Builds all CalendarEvent into $calendar.
+     * Builds all Event into $calendar.
      * Inserts custom nodes if available.
      *
      * @return string
