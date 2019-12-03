@@ -34,7 +34,7 @@
                             <span>Teacher:</span>
                             <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
                             <span>Subject:</span>
-                            <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/subject/ICT.IDS.NW2.V19</samp></a><br>
+                            <a href="http://windeschedule.nl/schedule/subject/ICT.IDS.NW2.V19"><samp>http://windeschedule.nl/schedule/subject/ICT.IDS.NW2.V19</samp></a><br>
                         </div>
                         <div>
                             <span>
