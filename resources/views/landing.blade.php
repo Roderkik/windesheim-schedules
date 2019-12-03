@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta property="og:title" content="Windeschedule - ICalendar generator" />
+    <meta property="og:description" content="Windeschedule is a web app that makes adding schedules to calendar apps easy! You can create links to schedules for any teacher, class or subject."/>
     <meta property="og:type" content="text/calendar" />
     <meta property="og:url" content="{{ url() }}" />
     <meta property="og:image" content="{{ url() . "/ogp-preview.png" }}" />
