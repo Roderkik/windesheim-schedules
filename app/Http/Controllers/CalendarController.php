@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Calendar;
 use App\Helpers\CalendarEvent;
 use App\Helpers\WindesheimApi;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
-use Liliumdev\ICalendar\ZCiCal;
-use Liliumdev\ICalendar\ZCTimeZoneHelper;
 
 class CalendarController extends Controller
 {
     private WindesheimApi $api;
-    private ZCiCal $calendar;
+    private Calendar $calendar;
 
     /**
      * Initializes controller properties.
@@ -20,7 +19,7 @@ class CalendarController extends Controller
     public function __construct()
     {
         $this->api = new WindesheimApi();
-        $this->calendar = new ZCiCal();
+        $this->calendar = new Calendar();
     }
 
     /**
@@ -32,9 +31,9 @@ class CalendarController extends Controller
     public function class(string $class): Response
     {
         $this->api->setClass($class);
-        $this->buildCalendar();
+        $this->buildCalendar($class);
 
-        return $this->calendarResponse($class);
+        return $this->calendarResponse();
     }
 
     /**
@@ -46,9 +45,9 @@ class CalendarController extends Controller
     public function teacher(string $teacher): Response
     {
         $this->api->setTeacher($teacher);
-        $this->buildCalendar();
+        $this->buildCalendar($teacher);
 
-        return $this->calendarResponse($teacher);
+        return $this->calendarResponse();
     }
 
     /**
@@ -60,25 +59,27 @@ class CalendarController extends Controller
     public function subject(string $subject): Response
     {
         $this->api->setSubject($subject);
-        $this->buildCalendar();
+        $this->buildCalendar($subject);
 
-        return $this->calendarResponse($subject);
+        return $this->calendarResponse();
     }
 
     /**
      * Names the calendar and adds
      * events found in api.
      *
+     * @param string $name
      * @return void
      */
-    private function buildCalendar(): void
+    private function buildCalendar(string $name): void
     {
-        ZCTimeZoneHelper::getTZNode(
-            Carbon::now()->year,
-            Carbon::now()->year,
-            "Europe/Amsterdam",
-            $this->calendar->curnode
-        );
+        $timezone = "Europe/Amsterdam";
+
+        $this->calendar
+            ->customNode("X-WR-TIMEZONE:$timezone")
+            ->customNode("X-WR-CALNAME:$name")
+            ->customNode("NAME:$name")
+            ->timeZoneNode(Carbon::now()->year, Carbon::now()->year, "Europe/Amsterdam");
 
         foreach ($this->api->schedule() as $scheduleDatum) {
             if (empty($scheduleDatum->vaknaam) || empty($scheduleDatum->vakcode)) {
@@ -90,12 +91,14 @@ class CalendarController extends Controller
             $scheduleDatum->starttijd = Carbon::createFromTimestampMs($scheduleDatum->starttijd);
             $scheduleDatum->eindtijd = Carbon::createFromTimestampMs($scheduleDatum->eindtijd);
 
-            $event = new CalendarEvent($this->calendar);
-            $event->title($scheduleDatum->commentaar);
-            $event->location($scheduleDatum->lokaal);
-            $event->start(CalendarEvent::icalFormat($scheduleDatum->starttijd), "Europe/Amsterdam");
-            $event->end(CalendarEvent::icalFormat($scheduleDatum->eindtijd), "Europe/Amsterdam");
-            $event->stamp("Europe/Amsterdam");
+            $event = new CalendarEvent();
+            $event->title($scheduleDatum->commentaar)
+                ->location($scheduleDatum->lokaal)
+                ->start($scheduleDatum->starttijd, $timezone)
+                ->end($scheduleDatum->eindtijd, $timezone)
+                ->stamp($timezone);
+
+            $this->calendar->event($event);
         }
     }
 
@@ -103,23 +106,11 @@ class CalendarController extends Controller
      * Creates the standard response
      * used by this controller.
      *
-     * @param string $name
      * @return Response
      */
-    private function calendarResponse(string $name): Response
+    private function calendarResponse(): Response
     {
-        //Add X-WR-TIMEZONE, X-WR-CALNAME & NAME post export because liliumdev/icalendar doesn't support it
-        $stream = $this->calendar->export();
-        $needle = "METHOD:PUBLISH";
-
-        $stream = substr_replace(
-            $stream,
-            "X-WR-TIMEZONE:Europe/Amsterdam\r\nX-WR-CALNAME:$name\r\nNAME:$name\r\n",
-            strpos($stream, $needle),
-            0
-        );
-
-        return response($stream)
+        return response($this->calendar->export())
             ->header('Content-Type', 'text/calendar')
             ->header('charset', 'utf-8');
     }
