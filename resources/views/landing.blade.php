@@ -17,21 +17,21 @@
 <body class="d-flex">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12 offset-sm-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+        <div class="col-sm-12 offset-sm-0 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3">
             <div class="card card-coming-soon">
                 <div class="card-body">
                     <div class="border-bottom">
                         <h3 class="text-center card-title">Schedule selector coming soon&trade;</h3>
-                        <h6 class="text-center card-subtitle mb-2 text-muted">Create them yourself for now...</h6>
+                        <h6 class="text-center card-subtitle mb-2 text-muted">Create the links yourself for now...</h6>
                     </div>
-                    <div class="card-content">
+                    <div class="card-content pb-2 border-bottom">
                         <span>URL structure:</span><br>
                         <kbd>"windeschedule.nl/schedule/[type]/[code]"</kbd><br><br>
                         <span>Examples:</span><br>
                         <samp>Class:</samp>
-                        <a href="http://windeschedule.nl/schedule/class/ICTSE1e"><samp>windeschedule.nl/schedule/class/ICTSE1e</samp></a><br>
+                        <a href="http://windeschedule.nl/schedule/class/ICTSE1e"><samp>http://windeschedule.nl/schedule/class/ICTSE1e</samp></a><br>
                         <samp>Teacher:</samp>
-                        <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
+                        <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
                     </div>
                 </div>
                 <div class="card-footer">
