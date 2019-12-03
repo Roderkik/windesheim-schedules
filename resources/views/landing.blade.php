@@ -1,8 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta property="og:title" content="Windeschedule - ICalendar generator" />
+    <meta property="og:type" content="text/calendar" />
+    <meta property="og:url" content="{{ url() }}" />
+    <meta property="og:image" content="{{ url() . "/ogp-preview.png" }}" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86486502-2"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
