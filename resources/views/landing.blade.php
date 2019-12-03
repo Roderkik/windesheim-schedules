@@ -35,7 +35,13 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <span class="text-muted font-small">For spicy memes check out: <a target="_blank" href="https://windesmemes.nl">Windesmemes</a></span>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted font-small text-left">Spicy memes: <a target="_blank" href="https://windesmemes.nl">Windesmemes</a></span>
+                        <span class="text-muted font-small text-right">
+                            <a target="_blank" href="https://github.com/rodrik3000/windesheim-schedules">Contribute</a>
+                            or <a target="_blank" href="https://www.paypal.me/Roderik">Donate</a>!
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
