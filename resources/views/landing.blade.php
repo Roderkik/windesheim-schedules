@@ -17,21 +17,35 @@
 <body class="d-flex">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12 offset-sm-0 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3">
+        <div class="col-sm-12 offset-sm-0 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-4 offset-xl-4">
             <div class="card card-coming-soon">
                 <div class="card-body">
                     <div class="border-bottom">
                         <h3 class="text-center card-title">Schedule selector coming soon&trade;</h3>
                         <h6 class="text-center card-subtitle mb-2 text-muted">Create the links yourself for now...</h6>
                     </div>
-                    <div class="card-content pb-2 border-bottom">
-                        <span>URL structure:</span><br>
-                        <kbd>"windeschedule.nl/schedule/[type]/[code]"</kbd><br><br>
-                        <span>Examples:</span><br>
-                        <samp>Class:</samp>
-                        <a href="http://windeschedule.nl/schedule/class/ICTSE1e"><samp>http://windeschedule.nl/schedule/class/ICTSE1e</samp></a><br>
-                        <samp>Teacher:</samp>
-                        <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
+                    <div class="card-content">
+                        <div class="pb-2 mb-2 border-bottom">
+                            <span>URL structure:</span><br>
+                            <kbd>"windeschedule.nl/schedule/[type]/[code]"</kbd><br><br>
+                            <span>Examples:</span><br>
+                            <span>Class:</span>
+                            <a href="http://windeschedule.nl/schedule/class/ICTSE1e"><samp>http://windeschedule.nl/schedule/class/ICTSE1e</samp></a><br>
+                            <span>Teacher:</span>
+                            <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
+                            <span>Subject:</span>
+                            <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/subject/ICT.IDS.NW2.V19</samp></a><br>
+                        </div>
+                        <div>
+                            <span>
+                                Windeschedule is a web app that makes adding schedules to calendar apps easy!
+                                You can create links to schedules for any teacher, class or subject,
+                                check out the following links if you don't know how to add these schedules to
+                                <a target="_blank" href="https://support.office.com/en-us/article/import-or-subscribe-to-a-calendar-in-outlook-on-the-web-503ffaf6-7b86-44fe-8dd6-8099d95f38df">Outlook</a>
+                                or
+                                <a target="_blank" href="https://support.google.com/calendar/answer/37100?co=GENIE.Platform%3DDesktop&hl=en">Google Calendar</a>.
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
