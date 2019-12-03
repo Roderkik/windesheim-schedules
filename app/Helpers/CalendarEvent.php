@@ -4,7 +4,7 @@
 namespace App\Helpers;
 
 use Carbon\Carbon;
-use DateTime;
+use InvalidArgumentException;
 use Liliumdev\ICalendar\ZCiCal;
 use Liliumdev\ICalendar\ZCiCalDataNode;
 use Liliumdev\ICalendar\ZCiCalNode;
@@ -12,91 +12,58 @@ use Liliumdev\ICalendar\ZCiCalNode;
 class CalendarEvent
 {
     private ZCiCalNode $event;
+    private array $nodes;
 
-    public function __construct(ZCiCal $calendar)
+    public function __construct()
+    {
+        $this->nodes = [];
+    }
+
+    public function build(ZCiCal $calendar)
     {
         $this->event = new ZCiCalNode("VEVENT", $calendar->curnode);
+        $this->nodes[] = ["type" => "standard", "name" => "UID:", "value" => md5(time() * mt_rand())];
 
-        $this->addNode("UID:" . md5(time() * mt_rand()));
-    }
-
-    public function title(string $title): CalendarEvent
-    {
-        $this->addNode("SUMMARY:" . $title);
-
-        return $this;
-    }
-
-    public function start(string $start, string $timezone = null): CalendarEvent
-    {
-        $this->addDateNode("DTSTART", $start, $timezone);
-
-        return $this;
-    }
-
-    public function end(string $end, string $timezone = null): CalendarEvent
-    {
-        $this->addDateNode("DTEND", $end, $timezone);
-
-        return $this;
-    }
-
-    public function stamp(string $timezone = null): CalendarEvent
-    {
-        $this->addDateNode("DTSTAMP", CalendarEvent::icalFormat(Carbon::now()), $timezone);
-
-        return $this;
-    }
-
-    public function description(string $end): CalendarEvent
-    {
-        $this->addNode("DESCRIPTION:" . $end);
-
-        return $this;
-    }
-
-    public function location(string $location): CalendarEvent
-    {
-        $this->addNode("LOCATION:" . $location);
-
-        return $this;
-    }
-
-    public function addCustomNode(ZCiCalDataNode $node): CalendarEvent
-    {
-        $this->event->addNode($node);
-
-        return $this;
-    }
-
-    private function addNode(string $nodeString): void
-    {
-        $this->event->addNode(new ZCiCalDataNode($nodeString));
-    }
-
-    private function addDateNode(string $type, string $time, string $timezone = null): void
-    {
-        if (empty($timezone)) {
-            $this->addNode("$type:" . $time);
-        } else {
-            $this->addNode("$type;" . "TZID=$timezone:" . $time);
+        foreach ($this->nodes as $node) {
+            switch ($node["type"]) {
+                case "standard":
+                    $this->event->addNode(new ZCiCalDataNode($node["name"] . $node["value"]));
+                    break;
+                case "date":
+                    $this->event->addNode($this->addDateNode($node));
+                    break;
+                default:
+                    throw new InvalidArgumentException("$node must contain field \"type\"!");
+                    break;
+            }
         }
+    }
+
+    private function addDateNode(array $node): ZCiCalDataNode
+    {
+        $name = $node["name"];
+        $time = $node["value"];
+        $timezone = $node["timezone"];
+
+        if (is_null($timezone)) {
+            $dataNode = new ZCiCalDataNode("$name:" . $time);
+        } else {
+            $dataNode = new ZCiCalDataNode("$name;" . "TZID=$timezone:" . $time);
+        }
+
+        return $dataNode;
     }
 
     /**
      * Formats a DateTime/Carbon instance to a correct ical format
      * https://www.kanzaki.com/docs/ical/dateTime.html
      *
-     * @param DateTime|Carbon $date
+     * @param Carbon $date
      * @param bool $utc
      * @return string
      */
-    public static function icalFormat($date, bool $utc = false): string
+    public static function icalFormat(Carbon $date, bool $utc = false): string
     {
-        if ($date instanceof DateTime) {
-            $date = Carbon::instance($date);
-        }
-
         $formatted =
             self::padDateComponent($date->year) .
             self::padDateComponent($date->month) .
@@ -118,7 +85,7 @@ class CalendarEvent
      * a zero to it if it's less
      * than 10.
      *
-     * method signature could be improved...
+     * method naming could be improved...
      *
      * @param int $dateComponent
      * @return string
@@ -129,7 +96,76 @@ class CalendarEvent
             return str_pad($dateComponent, 2, '0', STR_PAD_LEFT);
         }
 
-        return (string) $dateComponent;
+        return (string)$dateComponent;
+    }
+
+    public function start(Carbon $start, string $timezone = null): CalendarEvent
+    {
+        $this->nodes[] = [
+            "type" => "date",
+            "name" => "DTSTART",
+            "value" => CalendarEvent::icalFormat($start),
+            "timezone" => $timezone
+        ];
+
+        return $this;
+    }
+
+    public function end(Carbon $end, string $timezone = null): CalendarEvent
+    {
+        $this->nodes[] = [
+            "type" => "date",
+            "name" => "DTEND",
+            "value" => CalendarEvent::icalFormat($end),
+            "timezone" => $timezone
+        ];
+
+        return $this;
+    }
+
+    public function stamp(string $timezone = null): CalendarEvent
+    {
+        $this->nodes[] = [
+            "type" => "date",
+            "name" => "DTSTAMP",
+            "value" => CalendarEvent::icalFormat(Carbon::now()),
+            "timezone" => $timezone
+        ];
+
+        return $this;
+    }
+
+    public function title(string $title): CalendarEvent
+    {
+        $this->addNode("SUMMARY:", $title);
+
+        return $this;
+    }
+
+    private function addNode(string $name, string $value): void
+    {
+        $this->nodes[] = ["type" => "standard", "name" => $name, "value" => $value];
+    }
+
+    public function description(string $description): CalendarEvent
+    {
+        $this->addNode("DESCRIPTION:", $description);
+
+        return $this;
+    }
+
+    public function location(string $location): CalendarEvent
+    {
+        $this->addNode("LOCATION:", $location);
+
+        return $this;
+    }
+
+    public function customNode(string $name, string $value): CalendarEvent
+    {
+        $this->addNode($name, $value);
+
+        return $this;
     }
 
 }
