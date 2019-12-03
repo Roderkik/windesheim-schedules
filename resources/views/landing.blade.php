@@ -31,14 +31,14 @@
                     <div class="card-content">
                         <div class="pb-2 mb-2 border-bottom">
                             <span>URL structure:</span><br>
-                            <kbd>"windeschedule.nl/schedule/[type]/[code]"</kbd><br><br>
+                            <kbd>"{{ url() }}/schedule/[type]/[code]"</kbd><br><br>
                             <span>Examples:</span><br>
                             <span>Class:</span>
-                            <a href="http://windeschedule.nl/schedule/class/ICTSE1e"><samp>http://windeschedule.nl/schedule/class/ICTSE1e</samp></a><br>
+                            <a href="{{ url() }}/schedule/class/ICTSE1e"><samp>{{ url() }}/schedule/class/ICTSE1e</samp></a><br>
                             <span>Teacher:</span>
-                            <a href="http://windeschedule.nl/schedule/teacher/BNH09"><samp>http://windeschedule.nl/schedule/teacher/BNH09</samp></a><br>
+                            <a href="{{ url() }}/schedule/teacher/BNH09"><samp>{{ url() }}/schedule/teacher/BNH09</samp></a><br>
                             <span>Subject:</span>
-                            <a href="http://windeschedule.nl/schedule/subject/ICT.IDS.NW2.V19"><samp>http://windeschedule.nl/schedule/subject/ICT.IDS.NW2.V19</samp></a><br>
+                            <a href="{{ url() }}/schedule/subject/ICT.IDS.NW2.V19"><samp>{{ url() }}/schedule/subject/ICT.IDS.NW2.V19</samp></a><br>
                         </div>
                         <div>
                             <span>
